@@ -39,8 +39,10 @@
 
   [% spectab %]
   [% html %]
+  </ul>
 <!--
 -->
+  <ul class=entries>
   <table id="rounded-corner" summary="Listing"> 
   [% IF entries.size %]
     [% FOREACH id IN entries.keys.nsort %]
@@ -55,6 +57,8 @@
     [% END %]
 </table>
   [% ELSE %]
-    <li><em>Unbelievable.  No entries here so far</em>
+  <p>
+    <li><em>Unbelievable.  No entries here so far</em></li>
+  </p>
   [% END %]
 </ul>

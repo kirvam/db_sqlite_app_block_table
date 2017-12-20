@@ -49,6 +49,7 @@ my $flash;
 
 sub set_flash {
     my $message = shift;
+
     $flash = $message;
 }
 
@@ -114,8 +115,8 @@ print "Dumper \%hash \n";
     template 'show_entries.tt', {
         'msg' => get_flash(),
         'add_entry_url' => uri_for('/add'),
-     ###   'entries' => $sth->fetchall_hashref('id'),
-          'entries' => $entries,
+        ###'entries' => $sth->fetchall_hashref('id'),
+     #     'entries' => $entries,
      #   'spectab' => $spectab,
         'html' => $html,
       
