@@ -10,7 +10,7 @@
   <ul class=entries>
   [% IF entries.size %]
     [% FOREACH id IN entries.keys.nsort %]
-      <li>[% entries.$id.parent %] [% entries.$id.entryDate %] [% entries.$id.category %] [% entries.$id.title %] [% entries.$id.text %] [% entries.$id.status %]
+      <li>[% entries.$id.parent %]&semi; [% entries.$id.entryDate %]&semi; [% entries.$id.category %]&semi; [% entries.$id.title %]&semi; [% entries.$id.text %]&semi; [% entries.$id.status %]
     [% END %]
   [% ELSE %]
     <li><em>Unbelievable.  No entries here so far</em>

@@ -395,13 +395,13 @@ sub style_ref_HoHoA_1_print_FH {
 my($hash_ref,$html) = @_;
 open  my ($fh), '>', \$html || die "Flaming death on open of $html: $! \n";
 print "\n\n";
-print $fh "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n";
-print $fh "        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-print $fh "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
-print $fh "<head>\n";
+#print $fh "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n";
+#print $fh "        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+#print $fh "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n";
+#print $fh "<head>\n";
 print $fh "<meta http-equiv=\"Content-type\" content=\"text/html; charset=<% settings.charset %>\" />\n";
 print $fh "<title>CS Project Dashboard</title>\n";
-print $fh "<link rel=\"stylesheet\" href=\"http://10.80.8.12:443/css/style.css\" />\n";
+### print $fh "<link rel=\"stylesheet\" href=\"http://10.80.8.12:443/css/style.css\" />\n";
 print $fh "<!-- Grab jQuery from a CDN, fall back to local if necessary -->\n";
 print $fh "<script src=\"//code.jquery.com/jquery-1.11.1.min.js\"></script>\n";
 print $fh "<!-- End Comments -->\n";
@@ -417,8 +417,6 @@ print $fh "\@media screen and (min-width: 480px) {
 }\n";
 print $fh "</style>\n";
 my $big_string = "
-  </head>
-  <body>
     <div class=page>
     <h1>CS Dashboard</h1>
        <div class=metanav>
@@ -428,7 +426,8 @@ my $big_string = "
 \n";
 #
 print $fh "$big_string";
-print $fh "<tbody bgcolor=\"#ffd\">\n";
+print $fh "<thead bgcolor=\"#ffd\">\n";
+### print $fh "<tbody bgcolor=\"#ffd\">\n";
 print $fh "<tr style=\"background-color:darkblue; color:white;\">\n";
 print $fh "<td>Heading OR Date</td>\n";
 #print $fh "<td>Date</td>\n";
@@ -436,24 +435,36 @@ print $fh "<td>Staff</td>\n";
 print $fh "<td>Note</td>\n";
 print $fh "<td>Status</td>\n";
 print $fh "</tr>\n";
-print $fh "</tbody>\n";
+### print $fh "</tbody>\n";
+print $fh "</thead>\n";
 foreach my $key ( sort keys %$hash_ref ){
          print $fh "<!-- Start Heading -->\n";
          print $fh "<tbody>\n";
-         print $fh "<tr style=\"background-color:#E6E6FA; color:black;\">\n";
-         print $fh "<td>$key</td>\n";
+###         print $fh "<tr style=\"background-color:#E6E6FA; color:black;\">\n";
+###
+         print $fh "  <tr style=\"background-color:#E6E6FA;color:black;\" class=\"flip\"; style=\"color:black;\">\n";
+###
+         print $fh "<td rowspan=\"4\">$key</td>\n";
          print $fh "</tr>\n";
          print $fh "</tbody>\n";
           my $count = 0;
+###
+         print $fh "  <tbody class=\"section\" style=\"display:none;\" bgcolor=\"#ffd\">\n";
+###
+
           foreach my $entry ( reverse sort keys %{ $hash_ref->{$key} } ){
+###
+###         print $fh "  <tbody class=\"section\" style=\"display: none;\">\n";
+###
                     if ( $count == 0 ){
                     print $fh "<!-- Start Listing  $#array $count-->\n";
-                     print $fh "  <tbody bgcolor=\"#ffd\">\n";
-                      print $fh "  <tr class=\"flip\"; style=\"background-color:lightblue; color:black;\">\n";
+  ###                   print $fh "  <tbody bgcolor=\"#ffd\">\n";
+##                      print $fh "  <tr class=\"flip\"; style=\"background-color:lightblue;color:black;\">\n";
+                       print $fh "  <tr style=\"background-color:lightblue;color:black;\">\n";
                       $count++;
                        } elsif ( $count == 1 ){
                           print $fh "<!-- Flip Start $#array $count-->\n";
-                          print $fh "  <tbody class=\"section\" style=\"display: none;\">\n";
+##                          print $fh "  <tbody class=\"section\" style=\"display:none;\">\n";
                           print $fh "  <tr>\n";
                           $count++;
                         }  else {
@@ -470,14 +481,16 @@ foreach my $key ( sort keys %$hash_ref ){
              print $fh " </tr>\n";
                 };
                 
-             if ($count ==0 ){ print $fh " </tbody>\n"; }
+      #       if ($count ==0 ){ print $fh " </tbody>\n"; }
    #          print $fh "<!-- End -->\n";
                # };
      print $fh "\n";
    };
      print $fh " </tbody>\n";
+###
+###   
      print $fh "<!-- End -->\n";
-     print $fh "<p>\n";
+###     print $fh "<p>\n";
 
   };
 #
