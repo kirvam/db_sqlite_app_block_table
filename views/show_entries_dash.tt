@@ -35,9 +35,21 @@
       </dl>
     </form>
   [% END %]
-  <ul class=entries>
+<!--  
+-->
+<ul class=entries>
+  <table id="rounded-corner" summary="Listing"> 
+  [% FOR item = ToA %]
+    <tr style="background-color:#E6E6FA; color:blue;">
+    <td>[% item %]</td></tr>
+   [% END %]
+  </table>
+</ul>
 
+<br>
+<ul class=entries>
   [% spectab %]
+  <br>
   [% html %]
   </ul>
 <!--
