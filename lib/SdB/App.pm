@@ -143,7 +143,8 @@ get '/Dashboard2' => sub {
                 # my $sql = "select id, parent, entryDate, title, entryDate, category, text, status from entries where title in ('Amazon','Rubrik','vRealize') order by title desc limit 26";
                 my $sql = "select id, parent, entryDate, title, entryDate, category, text, status from entries order by title desc";
                 my $sqlu = "select id, parent, entryDate, title, entryDate, category, text, status from entries where title = '";
-                my $suffix = "' order by title desc limit 3";
+                #my $suffix = "' order by title desc limit 3";
+                my $suffix = "' order by id desc limit 3";
                   
                   print $sqlu,"\n";
                   print $suffix,"\n";
@@ -264,6 +265,54 @@ print "Dumper \%hash \n";
         'html' => $html,
     };
 };
+####
+get '/Dashboard3' => sub {
+    my $db = connect_db();
+    my $sql_title = 'select distinct title from entries order by title desc';
+    my $sth_t = $db->prepare($sql_title) or die $db->errstr;
+    $sth_t->execute or die $sth_t->errstr;
+    my @title = $sth_t->fetchall_arrayref();
+     print Dumper \@title;
+     for my $ti ( 0 .. $#title ){
+           print "$title[$ti][0]\n";
+             };
+     #print Dumper \@title;
+  
+
+    my $sql = 'select id, parent, entryDate, title, entryDate, category, text, status from entries order by title desc';
+     my $sth = $db->prepare($sql) or die $db->errstr;
+     $sth->execute or die $sth->errstr;
+   
+    my $stha = $db->prepare($sql) or die $db->errstr;
+     $stha->execute or die $sth->errstr;
+     my $entries = $sth->fetchall_hashref('id');
+    
+    my $list = $stha->fetchall_arrayref();
+    my $spectab = "<p><table><tr><td>dog</td><td>bat</td><td>cow</td></tr></table><p>\n";
+    my $data = $entries;
+     print Dumper \$list;
+     print "Finished with dumping \$list.\n";
+my $html = q{};
+my @AoA = ();
+%hash = ();
+@AoA = @{ $list };
+print Dumper \@AoA;
+print "Finished Dumper \@AoA\n";
+for_while_loop_2(@AoA);
+$html = style_ref_HoHoA_1_print_FH(\%hash,$html);
+print "Dumper \%hash \n";
+#print Dumper \%hash;
+    template 'show_entries_dash.tt', {
+        'msg' => get_flash(),
+        'add_entry_url' => uri_for('/add'),
+     ###   'entries' => $sth->fetchall_hashref('id'),
+     ###   'entries' => $entries,
+     ###   'spectab' => $spectab,
+        'html' => $html,
+    };
+};
+
+####
 
 ###
 get '/ALL' => sub {
@@ -518,6 +567,7 @@ my $actions = {
 print "SUB CL: evaluateLine\n";
 };
 
+
 sub for_while_loop_2{
 print "SUB:  for_while_loop_2\n";
 my(@AoA) = @_;
@@ -588,11 +638,11 @@ print $fh "$big_string";
 print $fh "<thead bgcolor=\"#ffd\">\n";
 ### print $fh "<tbody bgcolor=\"#ffd\">\n";
 print $fh "<tr style=\"background-color:darkblue; color:white;\">\n";
-print $fh "<td>Heading OR Date</td>\n";
-#print $fh "<td>Date</td>\n";
+print $fh "<td>Heading</td>\n";
+print $fh "<td>Date</td>\n";
 print $fh "<td>Staff</td>\n";
 print $fh "<td>Note</td>\n";
-print $fh "<td>Status</td>\n";
+#print $fh "<td>Status</td>\n";
 print $fh "</tr>\n";
 ### print $fh "</tbody>\n";
 print $fh "</thead>\n";
@@ -612,6 +662,7 @@ foreach my $key ( sort keys %$hash_ref ){
 ###
 
           foreach my $entry ( reverse sort keys %{ $hash_ref->{$key} } ){
+            if ( $count le 4 ) {
 ###
 ###         print $fh "  <tbody class=\"section\" style=\"display: none;\">\n";
 ###
@@ -632,6 +683,9 @@ foreach my $key ( sort keys %$hash_ref ){
                            print $fh "  <tr style=\"background-color:lightblue;color:black\">\n";
                            $count++;
                      };
+               } else {
+               next;
+             };
               my @array =  $hash_ref->{$key}->{$entry} ;
                   for my $i ( 0 .. $#array ) {
                     for my $j ( 3 .. $#{ $array[$i] } ) {
