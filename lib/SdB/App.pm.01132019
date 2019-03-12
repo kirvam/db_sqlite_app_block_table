@@ -388,7 +388,6 @@ post '/addblock' => sub {
            chomp($title);
            chomp($text);
            chomp($status);
-           
            my $db = connect_db();
            my $sql = 'insert into entries (parent, entryDate, title, category, text, status) values (?, ?, ?, ?, ?, ?)';
            #my $sql = 'insert into entries (parent, category, title, text) values (?, ?, ?, ?)';
@@ -486,7 +485,7 @@ my($item)=@_;
 
 sub cleaner {
 my($item) = @_;
- if ($item =~ s/[\x0a\x0d]/\<br\>/g){
+ if ($item =~ s/[\x0a\x0d]//g){
    print "Found NL\n";
   };
  print "cleaner: $item\n";
