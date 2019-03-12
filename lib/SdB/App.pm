@@ -462,8 +462,12 @@ get '/BCC' => sub {
     send_file 'table_v3.html';
 };
 
-get '/NLIST' => sub {
-    send_file 'nlist.html';
+get '/CAP' => sub {
+    send_file 'data/cap-cpu.png';
+};
+
+get '/CapData' => sub {
+    send_file '/data/cap-cpu.png';
 };
 
 init_db();
