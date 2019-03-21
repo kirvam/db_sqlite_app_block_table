@@ -463,7 +463,15 @@ get '/BCC' => sub {
 };
 
 get '/CAP' => sub {
-    send_file 'data/cap-cpu.png';
+    send_file 'data/dash.html';
+};
+
+get '/CAPB' => sub {
+    send_file 'data/dashb.html';
+};
+
+get '/CAPC' => sub {
+    send_file 'data/dashc.html';
 };
 
 get '/CapData' => sub {
