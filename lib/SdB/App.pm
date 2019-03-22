@@ -467,11 +467,11 @@ get '/CAP' => sub {
 };
 
 get '/CAPB' => sub {
-    send_file 'data/dashb.html';
+    send_file '/data/dashb.html';
 };
 
 get '/CAPC' => sub {
-    send_file 'data/dashc.html';
+    send_file '/data/dashc.html';
 };
 
 get '/CapData' => sub {
