@@ -3,10 +3,8 @@
       <dl>
         <dt>Parent:</dt>
         <dd><input type=text size=30 name=parent></dd>
-        <dt>Entry Date:</dt>
-        <dd><input type=text size=30 name=entryDate></dd>
         <dt>Category:</dt>
-        <select name=category>
+        <select name=entryDate>
          <dd>
          <option value="BLANK" size=30>--which kind--</option>
              <option value="Initiative" size=30>Initiative</option>
@@ -17,10 +15,15 @@
           </dd>
         </select>
         <p>
+        <dt>Entry Date [MM-DD-YYYY]:</dt>
+        <dd><input type=text size=30 name=category></dd>
         <dt>Title:</dt>
         <dd><input type=text size=30 name=title>
-        <dt>Text:</dt>
-        <dd><textarea maclength=1000 placeholder="Add entry details here." autofocus name=text rows=5 cols=100></textarea>
+        <dt>Author[Name,TeamName]:</dt>
+        <dd><input type=text size=30 name=text>
+        <dt>Update Note:</dt>
+        <dd><textarea maclength=1000 placeholder="Add entry details here." autofocus name=status rows=5 cols=100></textarea>
+<!--
         <dt>Status:</dt>
         <select name=status>
          <dd>
@@ -30,6 +33,7 @@
             <option value="Red" size=30>Red</option>
           </dd>
          </select>
+-->
          <p>
         <dd><input type=submit value=Share></dd>
       </dl>

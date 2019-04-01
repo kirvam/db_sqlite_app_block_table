@@ -82,34 +82,26 @@ get '/' => sub {
     #my $sql = 'select id, parent, entryDate, category, title, text, status from entries order by id desc';
     my $sql = 'select id, parent, entryDate, title, entryDate, category, text, status from entries order by title desc';
     #my $sql = 'select id, parent, entryDate, title, text, status from entries where id in (\'1\',\'2\',\'17\') order by id desc';
-    my $sqlParent = 'select distinct parent from entries';
     my $sth = $db->prepare($sql) or die $db->errstr;
     $sth->execute or die $sth->errstr;
    
     my $stha = $db->prepare($sql) or die $db->errstr;
     $stha->execute or die $sth->errstr;
-
-    my $sthParent = $db->prepare($sqlParent) or die $db->errstr;
-    $sthParent->execute or die $sth->errstr;
  
     ###print "$sth->fetchall_hashref()\n\n";
     my $entries = $sth->fetchall_hashref('id');
     
     my $list = $stha->fetchall_arrayref();
-    my $listParent = $sthParent->fetchall_arrayref();
-
     my $spectab = "<p><table><tr><td>dog</td><td>bat</td><td>cow</td></tr></table><p>\n";
     my $data = $entries;
      ###print Dumper $data;
-    print Dumper \$list;
-    print Dumper \$listParent;
-    print "Finished with dumping \$list.\n";
+     print Dumper \$list;
+     print "Finished with dumping \$list.\n";
      ###
 my $html = q{};
 my @AoA = ();
 %hash = ();
 @AoA = @{ $list };
-my @AoAParent = @{ $listParent };
 print Dumper \@AoA;
 print "Finished Dumper \@AoA\n";
 for_while_loop_2(@AoA);
@@ -120,17 +112,16 @@ print "Dumper \%hash \n";
 #print Dumper \%hash;
      ###
     template 'show_entries.tt', {
-                  'msg' => get_flash(),
+        'msg' => get_flash(),
         'add_entry_url' => uri_for('/add'),
-          #   'entries' => $sth->fetchall_hashref('id'),
-              'entries' => $entries,
-          #   'spectab' => $spectab,
-                 'html' => $html,
-           'listParent' => @AoAParent, 
+     ###   'entries' => $sth->fetchall_hashref('id'),
+          'entries' => $entries,
+     #   'spectab' => $spectab,
+        'html' => $html,
+      
     };
 };
 ###
-
 get '/Dashboard2' => sub {
     my $db = connect_db();
        my $sql_title = 'select distinct title from entries order by title desc';
