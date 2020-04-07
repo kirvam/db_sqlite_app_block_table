@@ -102,8 +102,13 @@ get '/' => sub {
     my $data = $entries;
      ###print Dumper $data;
     print Dumper \$list;
-    print Dumper \$listParent;
     print "Finished with dumping \$list.\n";
+
+    print Dumper \$listParent;
+    print "Finished with dumping \$listParent.\n";
+
+my @arr = mk_flat_AOA_(\$listParent);
+
      ###
 my $html = q{};
 my @AoA = ();
@@ -127,10 +132,122 @@ print "Dumper \%hash \n";
           #   'spectab' => $spectab,
                  'html' => $html,
            'listParent' => @AoAParent, 
+           'array' => \@arr,
     };
 };
 ###
+### Sub does not pass value in..  do not know why??
+sub mk_flat_AOA_{
+# takes an AOA
+my $AoAParent = @_;
+print "Dumper mk_flat\n";
+print Dumper \$AoAParent;
+#my @array;
+#foreach my $tt ( 0 .. $#{ $AoAParent } ) {
+#  foreach my $rr ( 0 .. $#{ ${$AoAParent}[$tt] } ){
+#          print "VAL: $tt $rr: ${$AoAParent}[$tt][$rr]\n";
+#          my $val = ${$AoAParent}[$tt][$rr];
+#          if ( $rr eq 0 ) { push @array, $val;  };
+#        };
+#  };
+# return(@array);
+};
+###
+get '/TESTA' => sub {
+    my $db = connect_db();
+    #my $sql = 'select id, parent, entryDate, category, title, text, status from entries order by id desc';
+    my $sql = 'select id, parent, entryDate, title, entryDate, category, text, status from entries order by title desc';
+    #my $sql = 'select id, parent, entryDate, title, text, status from entries where id in (\'1\',\'2\',\'17\') order by id desc';
+    #my $sqlParent = 'select distinct parent from entries';
+    #my $sqlParent = 'select distinct parent from entries where parent not in (\'none\')';
+    my $sqlParent = 'select title from entries where parent = \'none\'';
 
+    # select parent from entries where parent not in ('none')
+    my $sqlTitle = 'select distinct title from entries';
+
+    my $sth = $db->prepare($sql) or die $db->errstr;
+    $sth->execute or die $sth->errstr;
+   
+    my $stha = $db->prepare($sql) or die $db->errstr;
+    $stha->execute or die $sth->errstr;
+
+    my $sthParent = $db->prepare($sqlParent) or die $db->errstr;
+    $sthParent->execute or die $sth->errstr;
+
+    my $sthTitle = $db->prepare($sqlTitle) or die $db->errstr;
+    $sthTitle->execute or die $sth->errstr;
+ 
+    ###print "$sth->fetchall_hashref()\n\n";
+    my $entries = $sth->fetchall_hashref('id');
+    print Dumper \$entries;
+    print "Finished dumping \$entries.\n";
+    
+    my $list = $stha->fetchall_arrayref();
+    my $listParent = $sthParent->fetchall_arrayref();
+    my $listTitle = $sthTitle->fetchall_arrayref();
+
+    my $spectab = "<p><table><tr><td>dog</td><td>bat</td><td>cow</td></tr></table><p>\n";
+    my $data = $entries;
+     ###print Dumper $data;
+    print Dumper \$list;
+    print "Finished Dumping \$list.\n";
+    print Dumper \$listParent;
+    print "Finished Dumping \$listParent.\n";
+    my $listDistinctParent = $listParent;
+    print Dumper \$listDistinctParent;
+    print "Finished Dumping \@listDistinctParent\n";
+    print Dumper \$listTitle;
+    print "Finished Dumping \$listTitle.\n";
+     ###
+my $html = q{};
+my @AoA = ();
+%hash = ();
+@AoA = @{ $list };
+my @AoAParent = @{ $listParent };
+print Dumper \@AoA;
+print "Finished Dumper \@AoA\n";
+print Dumper \@AoAParent;
+print "Finished Dumper \@AoAParent\n";
+
+my @AoAarray;
+foreach my $tt ( 0 .. $#AoAParent ) {
+  foreach my $rr ( 0 .. $#{ $AoAParent[$tt] } ){
+          print $AoAParent[$tt][$rr],"\n";
+          if ( $rr eq 0 ) { push @AoAarray, $AoAParent[$tt][$rr];  };
+        };
+  };
+print "Dumping \@AoAarray\n";
+print Dumper \@AoAarray;
+
+
+my @array = qw( Project1 Project 2 ProjectX );
+print Dumper \@array;
+print "Finished Dumping \@array\n";
+for_while_loop_2(@AoA);
+#print "Dumper \%hash \n";
+#print Dumper \%hash;
+$html = style_ref_HoHoA_1_print_FH(\%hash,$html);
+print "Dumper \%hash \n";
+#print Dumper \%hash;
+     ###
+    template 'show_testa.tt', {
+                  'msg' => get_flash(),
+        'add_entry_url' => uri_for('/add'),
+       'edit_entry_url' => uri_for('/editnote'),
+          #   'entries' => $sth->fetchall_hashref('id'),
+              'entries' => $entries,
+              'spectab' => $spectab,
+                 'html' => $html,
+           'listParent' => \@AoAParent, 
+   'listDistinctParent' => $listDistinctParent, 
+        #    'array' => \@array,
+            'array' => \@AoAarray,
+    };
+};
+
+###
+
+###
 get '/Dashboard2' => sub {
     my $db = connect_db();
        my $sql_title = 'select distinct title from entries order by title desc';
@@ -220,6 +337,8 @@ get '/Dashboard2' => sub {
                        #'spectab' => $spectab,
                        #'spectab' => $title_list,
                        #'ToA' => \@ToA, 
+                       'edit_entry_url' => uri_for('/editnote'),
+# edit_entry_url
                        'html' => $html
                   };
       #print Dumper \$entries;
@@ -416,6 +535,54 @@ post '/addblock' => sub {
     redirect '/';
 };
 ###
+post '/editnote' => sub {
+    if ( not session('logged_in') ) {
+        send_error("Not logged in", 401);
+    }
+
+### 
+    my $string = params->{'text'};
+    my $id = params->{'id'};
+    chomp($string);
+    chomp($id);
+   # my @array = split(/\n/,$string);
+   # foreach my $item (@array){
+   #     chomp($item);
+   #     print "\$item: $item\n";
+  
+           my $string = cleaner($string);
+           my $id = cleaner($id);
+           
+         # my($parent,$category,$title,$text) = split(/\;\s?/,$clean);
+         # my($parent,$entryDate,$category,$title,$text,$status) = split(/\;\s?/,$clean);
+         #  chomp($parent);
+         #  chomp($entryDate);
+         #  chomp($category);
+         #  chomp($title);
+         #  chomp($text);
+         #  chomp($status);
+           
+           my $db = connect_db();
+           #my $sql = 'insert into entries (parent, entryDate, title, category, text, status) values (?, ?, ?, ?, ?, ?)';
+           ###my $sql = 'update entries set status = \''.$string.'\' where id =\''.$id.'\''; 
+           my $sql = "update entries set status = \'$string\' where id =\'$id\'"; 
+           ###my $sql = "select * from entries";
+        
+           #my $sql = 'insert into entries (parent, category, title, text) values (?, ?, ?, ?)';
+           ###$my $sql = "insert into entries (parent, category, title, text) values ($parent,$category,$title,$text)";
+           print "$sql\n";
+           my $sth = $db->prepare($sql) or die $db->errstr;
+           #$sth->execute(params->{'parent'},params->{'category'},params->{'title'}, params->{'text'}) or die $sth->errstr;
+           ###$sth->execute($parent,$category,$title,$text) or die $sth->errstr;
+           ###  $sth->execute($parent,$entryDate,$title,$category,$text,$status) or die $sth->errstr;
+
+           $sth->execute or die $sth->errstr;
+
+
+###
+    set_flash('New entry posted!');
+    redirect '/';
+};
 
 
 post '/add' => sub {
@@ -578,9 +745,9 @@ my $actions = {
   my $type;
   if($array[0] =~ m/^(none)$/){
        $type = $1;
-       print "$ii: \$type: $type | \$_[0]: $_[0] | \$array[0]: $array[0]\n";
+       print "$ii: \$type: ^$type^ | \$_[0]: $_[0] | \$array[0]: $array[0]\n";
    } else {
-      print "$ii: \$type: not parent | \$_[0]: $_[0] | \$array[0]: $array[0]\n";
+      print "$ii: \$type: not parent ^$type^ | \$_[0]: $_[0] | \$array[0]: $array[0]\n";
   };
        my $action = $actions->{$type}
              || $actions ->{$hash{ $array[0] }}

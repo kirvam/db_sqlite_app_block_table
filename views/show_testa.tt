@@ -2,16 +2,28 @@
     <form action="[% add_entry_url %]" method=post class=add-entry>
       <dl>
         <dt>Parent:</dt>
-        <select name=parent>
+         <select name=parent>
         <dd>
+                <option value="none" size=30>ADD NEW</option>
                [% FOREACH ii IN array %]
-                <option value=\"[% ii %]\" size=30>[% ii %]</option>
+                <option value="[% ii %]" size=30>[% ii %]</option>
                [% END %]
+         </select>
         </dd>
-       </select>
+<p>
 
 <label>Choose a browser from this list:
 <input list="browsers" name="myBrowser" /></label>
+<datalist id="browsers">
+               [% FOREACH ii IN array %]
+                <option value="[% ii %]">
+               [% END %]
+</datalist>
+
+<p>
+
+<label>Choose a browser from this list:
+<input list="browsers" name="myBrowserX" /></label>
 <datalist id="browsers">
   <option value="Chrome">
   <option value="Firefox">
@@ -20,7 +32,6 @@
   <option value="Safari">
   <option value="Microsoft Edge">
 </datalist>
-
 
       
         <dt>Category:</dt>
@@ -96,12 +107,26 @@
   [% IF entries.size %]
     [% FOREACH id IN entries.keys.nsort %]
       <tr style="background-color:#E6E6FA; color:black;">
+       <td>[% entries.$id.id %]</td>
        <td>[% entries.$id.parent %]</td>
        <td>[% entries.$id.entryDate %]</td>
        <td>[% entries.$id.category %]</td>
        <td>[% entries.$id.title %]</td>
        <td>[% entries.$id.text %]</td>
        <td>[% entries.$id.status %]</td>
+       <td>
+          <a href="https://www.w3schools.com">Visit W3Schools.com!</a>
+          <form action="[% edit_entry_url %]" method=post class=add-entry> 
+             <select name=id >
+               <option value='[% entries.$id.id %]' size=30>[% entries.$id.id %]</option>
+             </select>
+              <input type=text size=30 name=text>
+              </input>
+             <input type=submit value=ShareIT>
+      </dl>
+    </form>
+       
+       </td>
       </tr>
     [% END %]
 </table>
